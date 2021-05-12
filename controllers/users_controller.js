@@ -1,3 +1,9 @@
+module.exports.users = function(req, res) {
+    return res.render('users', {
+        title: "Users"
+    });
+}
+
 module.exports.profile = function(req, res) {
     return res.send("<h1>User's Profile here</h1>");
 }
