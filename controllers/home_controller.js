@@ -1,5 +1,7 @@
 module.exports.home = function(req, res) {
-    // return res.send('<h1>Express is up and running for Codial!</h1>')
+    console.log(req.cookies);
+    res.cookie('id', 11);
+
     return res.render('home', {
         title: "Home"
     });
