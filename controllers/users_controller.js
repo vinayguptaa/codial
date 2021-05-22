@@ -6,12 +6,27 @@ module.exports.users = function(req, res) {
     });
 }
 
-//practice stuff
 module.exports.profile = function(req, res) {
-    return res.send("<h1>User's Profile here</h1>");
+    if(req.cookies.user_id) {
+        User.findById(req.cookies.user_id, function(err, user) {
+            if(err) { console.log('error in finding user while loading profile'); return;}
+
+            if(user) {
+                return res.render('user_profile', {
+                    title: 'Codial | User Profile',
+                    user: user
+                });
+            }
+
+            //may be someone fiddled with the cookie
+            return res.redirect('/users/sign-in');
+        });
+    } else {
+        console.log('Please sign in firstly');
+        return res.redirect('/users/sign-in');
+    }
 }
 
-//practice stuff
 module.exports.posts = function(req, res) {
     return res.send("<h1>User's Posts here</h1>");
 }
@@ -56,5 +71,26 @@ module.exports.create = function(req, res) {
 
 //sign in user and creating a session for him/her
 module.exports.createSession = function(req, res) {
-    //TODO later
+    User.findOne({email: req.body.email}, function(err, user) {
+        if(err) {console.log('error in finding user while signing in'); return;}
+
+        if(user) {
+            if(user.password != req.body.password) {
+                console.log('Incorrect password!!');
+                return res.redirect('back');
+            }
+
+            res.cookie('user_id', user._id);
+            return res.redirect(`/users/profile`);
+        }else {
+            console.log('user does not exist, try re-entering email');
+            return res.redirect('back');
+        }
+    });
+}
+
+//signing out
+module.exports.signOut = function(req, res) {
+    res.cookie('user_id', '');
+    return res.redirect('/users/sign-in');
 }
