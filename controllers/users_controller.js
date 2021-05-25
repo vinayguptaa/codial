@@ -8,7 +8,9 @@ module.exports.users = function(req, res) {
 
 //practice stuff
 module.exports.profile = function(req, res) {
-    return res.send("<h1>User's Profile here</h1>");
+    return res.render('user_profile', {
+        title: 'Codial | Profile'
+    });
 }
 
 //practice stuff
@@ -18,6 +20,10 @@ module.exports.posts = function(req, res) {
 
 //sign up page render
 module.exports.signUp = function(req, res) {
+    if(req.isAuthenticated()) {
+        return res.redirect('/users/profile');
+    }
+
     return res.render('user_sign_up', {
         title: 'Codial | Sign up'
     });
@@ -25,6 +31,10 @@ module.exports.signUp = function(req, res) {
 
 //sign in page render
 module.exports.signIn = function(req, res) {
+    if(req.isAuthenticated()) {
+        return res.redirect('/users/profile');
+    }
+
     return res.render('user_sign_in', {
         title: 'Codial | Sign in'
     });
@@ -56,5 +66,11 @@ module.exports.create = function(req, res) {
 
 //sign in user and creating a session for him/her
 module.exports.createSession = function(req, res) {
-    //TODO later
+    return res.redirect('/users/profile');
+}
+
+module.exports.destroySession = function(req, res) {
+    req.logout();
+    
+    return res.redirect('/');
 }
